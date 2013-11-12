@@ -19,8 +19,11 @@ namespace NtlmGitTest
             if (Directory.Exists(localPath))
                 Directory.Delete(localPath, true);
 
-
-            Repository.Clone(cloneUrl, localPath);
+            using (new TfsGitSession())
+            {
+                Repository.Clone(cloneUrl, localPath);
+            }
         }
     }
+
 }

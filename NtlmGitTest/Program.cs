@@ -23,6 +23,12 @@ namespace NtlmGitTest
             {
                 Repository.Clone(cloneUrl, localPath);
             }
+
+            Console.WriteLine("Repository cloned! Top level content:");
+            foreach (var item in Directory.GetFileSystemEntries(localPath))
+            {
+                Console.WriteLine("  {0}", item);
+            }
         }
     }
 

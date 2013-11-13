@@ -17,9 +17,9 @@ namespace NtlmGitTest
             
             // ensure that local folder does not exist
             if (Directory.Exists(localPath))
-                Directory.Delete(localPath, true);
+                DirectoryDeleteAll(localPath);
 
-            using (new TfsGitSession())
+            using (new NtlmGitSession())
             {
                 Repository.Clone(cloneUrl, localPath);
             }
@@ -29,6 +29,19 @@ namespace NtlmGitTest
             {
                 Console.WriteLine("  {0}", item);
             }
+        }
+
+        // source: http://stackoverflow.com/questions/611921/how-do-i-delete-a-directory-with-read-only-files-in-c
+        public static void DirectoryDeleteAll(string directoryPath)
+        {
+            var rootInfo = new DirectoryInfo(directoryPath) { Attributes = FileAttributes.Normal };
+            foreach (var fileInfo in rootInfo.GetFileSystemInfos()) fileInfo.Attributes = FileAttributes.Normal;
+            foreach (var subDirectory in Directory.GetDirectories(directoryPath, "*", SearchOption.AllDirectories))
+            {
+                var subInfo = new DirectoryInfo(subDirectory) { Attributes = FileAttributes.Normal };
+                foreach (var fileInfo in subInfo.GetFileSystemInfos()) fileInfo.Attributes = FileAttributes.Normal;
+            }
+            Directory.Delete(directoryPath, true);
         }
     }
 

@@ -12,6 +12,8 @@ namespace NtlmGitTest
     [RpcSmartSubtransport]
     public class HttpClientSmartSubtransport : SmartSubtransport
     {
+        public static System.Net.ICredentials Credentials { get; internal set; }
+
         private HttpClient httpClient = null;
 
         protected override SmartSubtransportStream Action(string url, GitSmartSubtransportAction action)
@@ -48,13 +50,15 @@ namespace NtlmGitTest
         private HttpClient BuildHttpClientForUri(Uri serviceUri)
         {
             HttpClientHandler handler = new HttpClientHandler();
-            handler.UseDefaultCredentials = true;
+            if (Credentials == null)
+                handler.UseDefaultCredentials = true;
+            else
+                handler.Credentials = Credentials;
 
             var client = new HttpClient(handler);
             client.Timeout = TimeSpan.FromMinutes(5.0);
             return client;
         }
-
     }
 
     public class HtppClientSmartSubtransportStream : SmartSubtransportStream
